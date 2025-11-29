@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Контакты{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="page-header">
+            <h1>Контакты</h1>
+            <p class="subtitle">Свяжитесь с нами любым удобным способом</p>
+        </div>
+
+{#        {% if messages %}#}
+{#            <div class="messages">#}
+{#                {% for message in messages %}#}
+{#                    <div class="message {{ message.tags }}">#}
+{#                        {{ message }}#}
+{#                    </div>#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#        {% endif %}#}
+
+        <div class="contacts-layout">
+            <!-- Левая колонка - Контактная информация и форма -->
+            <div class="contacts-info">
+                {% if contact_info %}
+                    <div class="contact-card">
+                        <h2><i class="fas fa-map-marker-alt"></i> Наш магазин</h2>
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <i class="fas fa-location-dot"></i>
+                                <div>
+                                    <strong>Адрес:</strong>
+                                    <p>{{ contact_info.address }}</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <strong>Часы работы:</strong>
+                                    <p>{{ contact_info.working_hours|linebreaks }}</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <div>
+                                    <strong>Телефон:</strong>
+                                    <p><a href="tel:{{ contact_info.phone }}">{{ contact_info.phone }}</a></p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <strong>Email:</strong>
+                                    <p><a href="mailto:{{ contact_info.email }}">{{ contact_info.email }}</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Форма обратной связи -->
+                <div class="feedback-card">
+                    <h2><i class="fas fa-comments"></i> Обратная связь</h2>
+                    <p>Есть вопросы или предложения? Напишите нам!</p>
+
+                    <form method="post" class="feedback-form" id="feedback-form">
+                        {% csrf_token %}
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="{{ form.name.id_for_label }}">Имя *</label>
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                    <div class="field-error">{{ form.name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.email.id_for_label }}">Email *</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="field-error">{{ form.email.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="{{ form.phone.id_for_label }}">Телефон</label>
+                                {{ form.phone }}
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.subject.id_for_label }}">Тема *</label>
+                                {{ form.subject }}
+                                {% if form.subject.errors %}
+                                    <div class="field-error">{{ form.subject.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.message.id_for_label }}">Сообщение *</label>
+                            {{ form.message }}
+                            {% if form.message.errors %}
+                                <div class="field-error">{{ form.message.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large" id="submit-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            Отправить сообщение
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Правая колонка - Карта и отзывы -->
+            <div class="contacts-sidebar">
+                <!-- Карта -->
+                <div class="map-card">
+                    <h2><i class="fas fa-map"></i> Мы на карте</h2>
+                    <div style="position:relative;overflow:hidden;">
+                        <a href="https://yandex.by/maps/157/minsk/?utm_medium=mapframe&utm_source=maps"
+                           style="color:#eee;font-size:12px;position:absolute;top:0px;">Минск</a>
+                        <a href="https://yandex.by/maps/157/minsk/stops/station__9880199/?ll=27.624010%2C53.873276&tab=overview&utm_medium=mapframe&utm_source=maps&z=15.58"
+                           style="color:#eee;font-size:12px;position:absolute;top:14px;">Партизанская — Яндекс Карты</a>
+                        <iframe src="https://yandex.by/map-widget/v1/?ll=27.624010%2C53.873276&masstransit%5BstopId%5D=station__9880199&mode=masstransit&tab=overview&z=15.58"
+                                width="100%" height="300" frameborder="0" allowfullscreen="true"
+                                style="position:relative;"></iframe>
+                    </div>
+                </div>
+
+                <!-- Отзывы -->
+                <div class="reviews-card">
+                    <h2><i class="fas fa-star"></i> Отзывы с Kufar</h2>
+                    <div class="reviews-list">
+                        {% for review in reviews %}
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="review-author">{{ review.author }}</div>
+                                    <div class="review-rating">
+                                        {% for star in review.get_stars %}
+                                            <i class="fas fa-star"></i>
+                                        {% endfor %}
+                                        {% for star in review.get_empty_stars %}
+                                            <i class="far fa-star"></i>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="review-text">{{ review.text }}</div>
+                                <div class="review-meta">
+                                    <span class="review-date">{{ review.created_at|date:"d.m.Y" }}</span>
+                                    <span class="review-source">{{ review.source }}</span>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="no-reviews">
+                                <i class="fas fa-comment-slash"></i>
+                                <p>Пока нет отзывов</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if reviews %}
+                        <div class="reviews-footer">
+                            <a href="#" class="btn btn-outline btn-small">
+                                <i class="fas fa-external-link-alt"></i>
+                                Все отзывы на Kufar
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

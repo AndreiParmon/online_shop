@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+{% load tz %}
+
+{% block title %}Заказ принят{% endblock %}
+
+{% block content %}
+{% timezone "Europe/Minsk" %}
+<div class="container">
+    <div class="page-header">
+        <h1>Заказ успешно оформлен!</h1>
+        <p class="subtitle">Спасибо за ваш заказ. Мы уже начали его обработку.</p>
+    </div>
+
+    <div class="checkout-content">
+        <div class="order-summary">
+            <h3>Информация о заказе</h3>
+            <div class="order-details-card">
+                <div class="detail-item">
+                    <span class="label">Номер заказа:</span>
+                    <span class="value">#{{ order.id }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Дата и время заказа:</span>
+                    <span class="value">{{ order.created|date:"d.m.Y H:i" }} (Минск)</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Статус:</span>
+                    <span class="value status-processing">В обработке</span>
+                </div>
+                <div class="detail-item total-item">
+                    <span class="label">Итого:</span>
+                    <span class="value price">{{ order.get_total_cost }} Br</span>
+                </div>
+            </div>
+
+            <div class="customer-info">
+                <h4>Данные покупателя</h4>
+                <div class="detail-item">
+                    <span class="label">Имя:</span>
+                    <span class="value">{{ order.first_name }}</span>
+                </div>
+                {% if order.email %}
+                <div class="detail-item">
+                    <span class="label">Email:</span>
+                    <span class="value">{{ order.email }}</span>
+                </div>
+                {% endif %}
+                <div class="detail-item">
+                    <span class="label">Телефон:</span>
+                    <span class="value">{{ order.phone }}</span>
+                </div>
+                {% if order.comments %}
+                <div class="detail-item">
+                    <span class="label">Комментарий:</span>
+                    <span class="value">{{ order.comments }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="success-sidebar">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+
+            <div class="success-message">
+                <h3>Заказ принят!</h3>
+                <p>Мы свяжемся с вами в ближайшее время для подтверждения заказа.</p>
+            </div>
+
+            <div class="action-buttons">
+                <a href="{% url 'shop:product_list' %}" class="btn btn-primary btn-full">
+                    <i class="fas fa-store"></i>
+                    Продолжить покупки
+                </a>
+                <button class="btn btn-secondary btn-full" onclick="window.print()">
+                    <i class="fas fa-print"></i>
+                    Распечатать заказ
+                </button>
+            </div>
+
+            <div class="support-info">
+                <h4>Нужна помощь?</h4>
+                <p>Если у вас есть вопросы по заказу, свяжитесь с нами:</p>
+                <div class="contact-methods">
+                    <a href="mailto:info@myshop.by" class="contact-link">
+                        <i class="fas fa-envelope"></i>
+                        info@myshop.by
+                    </a>
+                    <a href="tel:+375331234567" class="contact-link">
+                        <i class="fas fa-phone"></i>
+                        +375 (33) 123-45-67
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endtimezone %}
+{% endblock %}

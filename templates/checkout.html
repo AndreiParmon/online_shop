@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Оформление заказа</h1>
+        <p class="subtitle">Заполните данные для завершения заказа</p>
+    </div>
+
+    <div class="checkout-content">
+        <div class="order-summary">
+            <h3>Ваш заказ</h3>
+            <div class="order-items">
+                {% for item in cart %}
+                <div class="order-item">
+                    <div class="item-image">
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                    </div>
+                    <div class="item-details">
+                        <h4>{{ item.product.name }}</h4>
+                        <p>Количество: {{ item.quantity }}</p>
+                        <p class="item-price">{{ item.total_price }} Br</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="order-total">
+                <strong>Итого: {{ cart.get_total_price }} Br</strong>
+            </div>
+        </div>
+
+        <div class="order-form-container">
+            <h3>Данные для заказа</h3>
+            <form action="." method="post" class="order-form" id="order-form">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                    {{ form.first_name }}
+                    <small class="form-text">Только буквы, минимум 2 символа</small>
+                    {% if form.first_name.errors %}
+                    <div class="error-list">
+                        {% for error in form.first_name.errors %}
+                        <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+                    {{ form.phone }}
+                    <small class="form-text">Форматы: +375 (29) 123-45-67, 375291234567, 80291234567</small>
+                    {% if form.phone.errors %}
+                    <div class="error-list">
+                        {% for error in form.phone.errors %}
+                        <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <div class="error-list">
+                        {% for error in form.email.errors %}
+                        <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.comments.id_for_label }}">{{ form.comments.label }}</label>
+                    {{ form.comments }}
+
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large btn-full">
+                    <i class="fas fa-check"></i>
+                    Подтвердить заказ
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/checkout.js" defer></script>
+
+{% endblock %}

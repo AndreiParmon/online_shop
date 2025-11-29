@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Каталог товаров{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="page-header">
+            <h1>{% if category %}{{ category.name }}{% else %}Все товары{% endif %}</h1>
+            <p class="subtitle">Найдите идеальные товары для себя</p>
+        </div>
+
+        {% if category %}
+            <div class="breadcrumb">
+                <a href="{% url 'shop:product_list' %}">Главная</a>
+                <span>/</span>
+                <span>{{ category.name }}</span>
+            </div>
+        {% endif %}
+
+        <div class="filters">
+            <div class="categories-filter">
+                <h3>Категории</h3>
+                <div class="category-list">
+                    <a href="{% url 'shop:product_list' %}"
+                       class="category-item {% if not category %}active{% endif %}">
+                        Все товары
+                    </a>
+                    {% for cat in categories %}
+                        <a href="{% url 'shop:product_list_by_category' cat.slug %}"
+                           class="category-item {% if category == cat %}active{% endif %}">
+                            {{ cat.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="products-section">
+            {% if products %}
+                <div class="products-grid">
+                    {% for product in products %}
+                        <div class="product-card">
+                            <div class="product-image-container">
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                                <div class="product-overlay">
+                                    <a href="{{ product.get_absolute_url }}" class="btn btn-view">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-name">{{ product.name }}</h3>
+                                <p class="product-description">{{ product.description|truncatewords:15 }}</p>
+                                <div class="product-price">{{ product.price }} Br</div>
+                                <form action="{% url 'shop:cart_add' product.id %}" method="post"
+                                      class="add-to-cart-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-primary btn-full">
+                                        <i class="fas fa-cart-plus"></i>
+                                        В корзину
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-box-open"></i>
+                    <h3>Товары не найдены</h3>
+                    <p>В этой категории пока нет доступных товаров</p>
+                    <a href="{% url 'shop:product_list' %}" class="btn btn-primary">
+                        Вернуться в каталог
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

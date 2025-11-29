@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Корзина{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Ваша корзина</h1>
+        <p class="subtitle">Проверьте ваш заказ перед оформлением</p>
+    </div>
+
+    {% if cart %}
+    <div class="cart-layout">
+        <div class="cart-items">
+            {% for item in cart %}
+            <div class="cart-item">
+                <div class="cart-item-product">
+                    <div class="cart-item-image">
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                        {% else %}
+                            <div class="image-placeholder">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="cart-item-details">
+                        <h3 class="cart-item-name">
+                            <a href="{% url 'shop:product_detail' item.product.id item.product.slug %}">
+                                {{ item.product.name }}
+                            </a>
+                        </h3>
+                        <p class="cart-item-category">{{ item.product.category.name }}</p>
+                        <div class="cart-item-price-mobile">
+                            {{ item.price }} Br за шт.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cart-item-quantity">
+                    <form action="{% url 'shop:cart_add' item.product.id %}" method="post" class="quantity-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="override" value="true">
+                        <div class="quantity-controls">
+                            <button type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}" 
+                                    class="quantity-btn minus" {% if item.quantity <= 1 %}disabled{% endif %}>
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            
+                            <span class="quantity-display">{{ item.quantity }}</span>
+                            
+                            <button type="submit" name="quantity" value="{{ item.quantity|add:'1' }}" 
+                                    class="quantity-btn plus">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="cart-item-total">
+                    <div class="total-price">{{ item.total_price }} Br</div>
+                    <div class="item-price">{{ item.price }} Br за шт.</div>
+                </div>
+
+                <div class="cart-item-actions">
+                    <form action="{% url 'shop:cart_remove' item.product.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-remove" onclick="return confirm('Удалить товар из корзины?')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="cart-actions">
+                <form action="{% url 'shop:cart_clear' %}" method="post" class="clear-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary" 
+                            onclick="return confirm('Очистить всю корзину?')">
+                        <i class="fas fa-trash-alt"></i>
+                        Очистить корзину
+                    </button>
+                </form>
+                <a href="{% url 'shop:product_list' %}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i>
+                    Продолжить покупки
+                </a>
+            </div>
+        </div>
+
+        <div class="cart-summary">
+            <div class="summary-card">
+                <h3>Итог заказа</h3>
+                
+                <div class="summary-line">
+                    <span>Товары ({{ cart|length }})</span>
+                    <span>{{ cart.get_total_price }} Br</span>
+                </div>
+
+                <div class="summary-divider"></div>
+                
+                <div class="summary-total">
+                    <span>Итого к оплате</span>
+                    <span class="total-price">{{ cart.get_total_price }} Br</span>
+                </div>
+
+                <a href="{% url 'shop:checkout' %}" class="btn btn-primary btn-large btn-checkout">
+                    <i class="fas fa-credit-card"></i>
+                    Перейти к оформлению
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-cart">
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h3>Ваша корзина пуста</h3>
+            <p>Добавьте товары, чтобы сделать заказ</p>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary">
+                <i class="fas fa-store"></i>
+                Перейти в каталог
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
