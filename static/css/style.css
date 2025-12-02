@@ -1687,6 +1687,23 @@ body {
 }
 
 /* Отзывы */
+.reviews-card {
+    background: white;
+    border-radius: 15px;
+    padding: 3rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.review-source {
+    background: #f5bf43; /* KUFAR.BY цвет */
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
 .reviews-list {
     max-height: 400px;
     overflow-y: auto;
@@ -2622,7 +2639,7 @@ label {
 .ad-modal-content {
     background: white;
     border-radius: 20px;
-    padding: 30px;
+    padding: 20px;
     max-width: 500px;
     width: 90%;
     text-align: center;

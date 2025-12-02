@@ -131,44 +131,142 @@
                 </div>
 
                 <!-- Отзывы -->
+                <!-- KUFAR.BY - Отзывы покупателей -->
                 <div class="reviews-card">
-                    <h2><i class="fas fa-star"></i> Отзывы с Kufar</h2>
+                    <h2><img src="/static/images/kufar.png" alt="logo kufar.by" height="50" width="50">Отзывы с Kufar.by</h2>
                     <div class="reviews-list">
-                        {% for review in reviews %}
-                            <div class="review-item">
-                                <div class="review-header">
-                                    <div class="review-author">{{ review.author }}</div>
-                                    <div class="review-rating">
-                                        {% for star in review.get_stars %}
-                                            <i class="fas fa-star"></i>
-                                        {% endfor %}
-                                        {% for star in review.get_empty_stars %}
-                                            <i class="far fa-star"></i>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                                <div class="review-text">{{ review.text }}</div>
-                                <div class="review-meta">
-                                    <span class="review-date">{{ review.created_at|date:"d.m.Y" }}</span>
-                                    <span class="review-source">{{ review.source }}</span>
+                        <!-- KUFAR.BY - Отзыв 1 -->
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="review-author">Пользователь</div>
+                                <div class="review-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
                                 </div>
                             </div>
-                        {% empty %}
-                            <div class="no-reviews">
-                                <i class="fas fa-comment-slash"></i>
-                                <p>Пока нет отзывов</p>
+                            <div class="review-text">
+                                <!-- KUFAR.BY - Комментарий покупателя -->
+                                Купил кулера для корпуса, описание соответствует, высоко оборотистые,
+                                тихие, поддерживает ARGB от материнской платы, самые дешёвые на рынке
+                                в этом сегменте, желаю развиваться данной фирме дальше
                             </div>
-                        {% endfor %}
+                            <div class="review-meta">
+                                <span class="review-date">23.11.2025</span>
+{#                                <span class="review-source">Kufar.by</span>#}
+                            </div>
+                        </div>
+
+                        <!-- KUFAR.BY - Отзыв 2 -->
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="review-author">M.K</div>
+                                <div class="review-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                            <div class="review-text">
+                                <!-- KUFAR.BY - Комментарий покупателя -->
+                                Хорошая компания, купил вертушки и был очень удивлён их качеству.
+                                Рекомендую
+                            </div>
+                            <div class="review-meta">
+                                <span class="review-date">17.11.2025</span>
+{#                                <span class="review-source">Kufar.by</span>#}
+                            </div>
+                        </div>
+
+                        <!-- KUFAR.BY - Отзыв 3 -->
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="review-author">Александра</div>
+                                <div class="review-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                            <div class="review-text">
+                                <!-- KUFAR.BY - Комментарий покупателя -->
+                                Все работает, все закачал что нужно, осталось только проверить
+                                как долго будет работать.
+                            </div>
+                            <div class="review-meta">
+                                <span class="review-date">14.11.2025</span>
+{#                                <span class="review-source">Kufar.by</span>#}
+                            </div>
+                        </div>
+
+                        <!-- KUFAR.BY - Отзыв 4 -->
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="review-author">Константин</div>
+                                <div class="review-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                            <div class="review-text">
+                                <!-- KUFAR.BY - Комментарий покупателя -->
+                                Спасибо большое добра вам и процветания.
+                            </div>
+                            <div class="review-meta">
+                                <span class="review-date">06.11.2025</span>
+{#                                <span class="review-source">Kufar.by</span>#}
+                            </div>
+                        </div>
+
+                        <!-- KUFAR.BY - Отзыв 5 -->
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="review-author">Артём</div>
+                                <div class="review-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                            <div class="review-text">
+                                <!-- KUFAR.BY - Комментарий покупателя -->
+                                все хорошо прошло, добрые и вежливые молодые люди, комфортный и
+                                приятный разговор, качественный товар, абсолютно новый, однозначно
+                                рекомендую
+                            </div>
+                            <div class="review-meta">
+                                <span class="review-date">03.11.2025</span>
+{#                                <span class="review-source">Kufar.by</span>#}
+                            </div>
+                        </div>
                     </div>
 
-                    {% if reviews %}
-                        <div class="reviews-footer">
-                            <a href="#" class="btn btn-outline btn-small">
-                                <i class="fas fa-external-link-alt"></i>
-                                Все отзывы на Kufar
-                            </a>
-                        </div>
-                    {% endif %}
+                    <div class="reviews-footer">
+                        <a href="https://www.kufar.by/user/Omqcd_Ny-YOcMHIogLwGQy4?previousUrl=https%3A%2F%2Fwww.kufar.by%2Fitem%2F1021463397%3Fr_block%3DFavorites%26searchId%3Dad279c9c-9fc5-4731-ace4-605a7e7c4cd9&widgetPosition=upper" class="btn btn-outline btn-small" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            Больше отзывов на Kufar.by
+                        </a>
+                    </div>
+
+{#                    {% if reviews %}#}
+{#                        <div class="reviews-footer">#}
+{#                            <a href="#" class="btn btn-outline btn-small">#}
+{#                                <i class="fas fa-external-link-alt"></i>#}
+{#                                Все отзывы на Kufar#}
+{#                            </a>#}
+{#                        </div>#}
+{#                    {% endif %}#}
                 </div>
             </div>
         </div>
