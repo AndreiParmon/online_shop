@@ -33,7 +33,7 @@
                         </h3>
                         <p class="cart-item-category">{{ item.product.category.name }}</p>
                         <div class="cart-item-price-mobile">
-                            {{ item.price }} Br за шт.
+                            {{ item.price }} BYN за шт.
                         </div>
                     </div>
                 </div>
@@ -59,8 +59,8 @@
                 </div>
 
                 <div class="cart-item-total">
-                    <div class="total-price">{{ item.total_price }} Br</div>
-                    <div class="item-price">{{ item.price }} Br за шт.</div>
+                    <div class="total-price">{{ item.total_price }} BYN</div>
+                    <div class="item-price">{{ item.price }} BYN за шт.</div>
                 </div>
 
                 <div class="cart-item-actions">
@@ -96,14 +96,14 @@
                 
                 <div class="summary-line">
                     <span>Товары ({{ cart|length }})</span>
-                    <span>{{ cart.get_total_price }} Br</span>
+                    <span>{{ cart.get_total_price }} BYN</span>
                 </div>
 
                 <div class="summary-divider"></div>
                 
                 <div class="summary-total">
                     <span>Итого к оплате</span>
-                    <span class="total-price">{{ cart.get_total_price }} Br</span>
+                    <span class="total-price">{{ cart.get_total_price }} BYN</span>
                 </div>
 
                 <a href="{% url 'shop:checkout' %}" class="btn btn-primary btn-large btn-checkout">

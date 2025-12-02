@@ -22,13 +22,13 @@
                     <div class="item-details">
                         <h4>{{ item.product.name }}</h4>
                         <p>Количество: {{ item.quantity }}</p>
-                        <p class="item-price">{{ item.total_price }} Br</p>
+                        <p class="item-price">{{ item.total_price }} BYN</p>
                     </div>
                 </div>
                 {% endfor %}
             </div>
             <div class="order-total">
-                <strong>Итого: {{ cart.get_total_price }} Br</strong>
+                <strong>Итого: {{ cart.get_total_price }} BYN</strong>
             </div>
         </div>
 

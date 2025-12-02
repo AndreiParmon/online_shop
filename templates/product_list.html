@@ -51,7 +51,7 @@
                             <div class="product-info">
                                 <h3 class="product-name">{{ product.name }}</h3>
                                 <p class="product-description">{{ product.description|truncatewords:15 }}</p>
-                                <div class="product-price">{{ product.price }} Br</div>
+                                <div class="product-price">{{ product.price }} BYN</div>
                                 <form action="{% url 'shop:cart_add' product.id %}" method="post"
                                       class="add-to-cart-form">
                                     {% csrf_token %}

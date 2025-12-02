@@ -34,9 +34,9 @@ def send_telegram_message(order):
     for item in order.items.all():
         item_total = item.price * item.quantity
         total_cost += item_total
-        message += f"\n• {item.product.name} - {item.quantity} шт. × {item.price} Br = {item_total} Br"
+        message += f"\n• {item.product.name} - {item.quantity} шт. × {item.price} BYN = {item_total} BYN"
 
-    message += f"\n\n💰 ИТОГО: {total_cost} Br"
+    message += f"\n\n💰 ИТОГО: {total_cost} BYN"
     message += f"\n⏰ Время заказа: {formatted_time}"
 
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
