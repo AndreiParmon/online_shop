@@ -34,7 +34,30 @@ def product_list(request, category_slug=None):
 
 def product_detail(request, id, slug):
     product = get_object_or_404(Product, id=id, slug=slug, available=True)
-    return render(request, 'product_detail.html', {'product': product})
+
+    # Собираем все изображения товара
+    all_images = []
+
+    # Основное изображение
+    if product.image:
+        all_images.append({
+            'url': product.image.url,
+            'is_main': True
+        })
+
+    # Дополнительные изображения
+    additional_images = product.additional_images.all().order_by('order')
+    for img in additional_images:
+        all_images.append({
+            'url': img.image.url,
+            'is_main': False
+        })
+
+    context = {
+        'product': product,
+        'images': all_images,
+    }
+    return render(request, 'product_detail.html', context)
 
 
 def cart_detail(request):
@@ -344,5 +367,3 @@ def send_feedback_to_telegram(feedback):
     except Exception as e:
         print(f"Ошибка отправки в Telegram: {e}")
         return False
-
-

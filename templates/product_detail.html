@@ -6,75 +6,159 @@
     <div class="container">
         <div class="breadcrumb">
             <a href="{% url 'shop:product_list' %}">Главная</a>
-            <span>/</span>
-            <a href="{% url 'shop:product_list_by_category' product.category.slug %}">{{ product.category.name }}</a>
-            <span>/</span>
+            <i class="fas fa-chevron-right"></i>
+            <a href="{% url 'shop:product_list' %}?category={{ product.category.slug }}">{{ product.category.name }}</a>
+            <i class="fas fa-chevron-right"></i>
             <span>{{ product.name }}</span>
         </div>
 
         <div class="product-detail">
+            <!-- Слайдер изображений -->
             <div class="product-gallery">
-                <div class="main-image">
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-detail-image">
+                <div class="slider-container">
+                    <div class="slider">
+                        {% for image in images %}
+                            <div class="slide {% if forloop.first %}active{% endif %}"
+                                 data-index="{{ forloop.counter0 }}">
+                                <img src="{{ image.url }}" alt="{{ product.name }}"
+                                     class="main-image"
+                                     data-full="{{ image.url }}">
+{#                                <div class="zoom-hint">#}
+{#                                    <i class="fas fa-expand-alt"></i>#}
+{#                                    <span>Нажмите для увеличения</span>#}
+{#                                </div>#}
+                            </div>
+                        {% empty %}
+                            <div class="slide active">
+                                <div class="image-placeholder" style="height: 500px;">
+                                    <i class="fas fa-image"></i>
+                                    <span>Изображение товара</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if images|length > 1 %}
+                        <button class="slider-btn prev-btn" aria-label="Предыдущее фото">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="slider-btn next-btn" aria-label="Следующее фото">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+
+                        <div class="slider-dots">
+                            {% for image in images %}
+                                <span class="dot {% if forloop.first %}active{% endif %}"
+                                      data-slide="{{ forloop.counter0 }}"></span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="thumbnail-container">
+                            {% for image in images %}
+                                <div class="thumbnail {% if forloop.first %}active{% endif %}"
+                                     data-slide="{{ forloop.counter0 }}">
+                                    <img src="{{ image.url }}" alt="{{ product.name }}"
+                                         class="thumbnail-img">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
 
+            <!-- Информация о товаре -->
             <div class="product-info-detail">
                 <h1 class="product-title">{{ product.name }}</h1>
+
                 <div class="product-meta">
                     <span class="category-badge">{{ product.category.name }}</span>
                     {% if product.available %}
-                        <span class="availability in-stock">В наличии</span>
+                        <span class="availability in-stock">
+                        <i class="fas fa-check"></i> В наличии
+                    </span>
                     {% else %}
-                        <span class="availability out-of-stock">Нет в наличии</span>
+                        <span class="availability out-of-stock">
+                        <i class="fas fa-times"></i> Нет в наличии
+                    </span>
                     {% endif %}
                 </div>
 
                 <div class="product-price-large">{{ product.price }} BYN</div>
 
-                <div class="product-description-full">
-                    <h3>Описание</h3>
-                    <p>{{ product.description }}</p>
-                </div>
-
                 {% if product.available %}
-                    <form action="{% url 'shop:cart_add' product.id %}" method="post"
-                          class="purchase-form add-to-cart-form">
+                    <form action="{% url 'shop:cart_add' product.id %}" method="post" class="purchase-form"
+                          id="add-to-cart-form">
                         {% csrf_token %}
+                        <input type="hidden" name="override" value="false">
+
                         <div class="quantity-selector">
                             <label for="quantity">Количество:</label>
                             <div class="quantity-controls">
-                                <button type="button" class="quantity-btn" onclick="decreaseQuantity()">-</button>
-                                <input type="number" id="quantity" name="quantity" value="1" min="1" max="10"
+                                <button type="button" class="quantity-btn minus-btn" data-action="minus">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" name="quantity" id="quantity" value="1" min="1" max="99"
                                        class="quantity-input">
-                                <button type="button" class="quantity-btn" onclick="increaseQuantity()">+</button>
+                                <button type="button" class="quantity-btn plus-btn" data-action="plus">
+                                    <i class="fas fa-plus"></i>
+                                </button>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-large">
+
+                        <button type="submit" class="btn btn-primary btn-large btn-full">
                             <i class="fas fa-shopping-cart"></i>
                             Добавить в корзину
                         </button>
                     </form>
                 {% else %}
-                    <button class="btn btn-disabled btn-large" disabled>
+                    <button class="btn btn-primary btn-large btn-full btn-disabled" disabled>
+                        <i class="fas fa-times"></i>
                         Товар недоступен
                     </button>
                 {% endif %}
+
+                <div class="product-description-full">
+                    <h3>Описание товара</h3>
+                    <p>{{ product.description|linebreaks }}</p>
+                </div>
 
                 <div class="product-features">
                     <div class="feature">
                         <i class="fas fa-shield-alt"></i>
                         <span>Гарантия качества</span>
                     </div>
+
                     <div class="feature">
-                        <i class="fas fa-undo"></i>
-                        <span>Легкий возврат</span>
+                        <i class="fas fa-credit-card"></i>
+                        <span>Оплата при получении</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-<script src="/static/js/product_detail.js" defer></script>
+    <!-- Lightbox (полноэкранный просмотр) -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <button class="lightbox-close" id="lightboxClose" aria-label="Закрыть">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Предыдущее изображение">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <div class="lightbox-container">
+            <div class="lightbox-image-container">
+                <img src="" alt="" class="lightbox-image" id="lightboxImage">
+            </div>
+            <div class="lightbox-counter" id="lightboxCounter"></div>
+        </div>
+
+        <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Следующее изображение">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <script src="/static/js/product_detail.js" defer></script>
 
 {% endblock %}
