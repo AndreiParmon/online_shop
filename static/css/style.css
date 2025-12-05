@@ -229,7 +229,7 @@ body {
 .product-image {
     width: 100%;
     height: 200px;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .product-info {
@@ -474,7 +474,7 @@ body {
 .category-item {
     padding: 0.8rem 1.5rem;
     background: white;
-    border: 2px solid #e0e0e0;
+    border: 2px solid #f5bf43;
     border-radius: 25px;
     text-decoration: none;
     color: var(--dark-gray);
@@ -486,7 +486,7 @@ body {
 .category-item.active {
     background: linear-gradient(135deg, var(--turquoise) 0%, var(--emerald) 100%);
     color: white;
-    border-color: transparent;
+    border-color: var(--turquoise) 0%, var(--emerald) 100%;
     transform: translateY(-2px);
 }
 
