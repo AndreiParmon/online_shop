@@ -451,36 +451,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 goToSlide(slideIndex);
             });
         });
-
-        // Управление количеством товара
-        const minusBtn = document.querySelector('.minus-btn');
-        const plusBtn = document.querySelector('.plus-btn');
-        const quantityInput = document.getElementById('quantity');
-
-        if (minusBtn && plusBtn && quantityInput) {
-            minusBtn.addEventListener('click', function() {
-                let value = parseInt(quantityInput.value);
-                if (value > 1) {
-                    quantityInput.value = value - 1;
-                }
-            });
-
-            plusBtn.addEventListener('click', function() {
-                let value = parseInt(quantityInput.value);
-                if (value < 99) {
-                    quantityInput.value = value + 1;
-                }
-            });
-
-            quantityInput.addEventListener('change', function() {
-                let value = parseInt(this.value);
-                if (isNaN(value) || value < 1) {
-                    this.value = 1;
-                } else if (value > 99) {
-                    this.value = 99;
-                }
-            });
-        }
     }
 
     // ========== ИНИЦИАЛИЗАЦИЯ ==========

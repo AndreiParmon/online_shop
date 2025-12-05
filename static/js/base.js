@@ -249,3 +249,91 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+
+
+// Обработчик для всех форм добавления в корзину
+document.addEventListener('DOMContentLoaded', function () {
+    const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+
+    addToCartForms.forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Пропускаем форму на странице товара (она обрабатывается отдельно)
+            if (this.id === 'add-to-cart-form') {
+                console.log('Пропускаем форму товара, т.к. она обрабатывается в product_detail.js');
+                return;
+            }
+
+            const url = this.action;
+            const formData = new FormData(this);
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        updateCartIcon(data.cart_total_quantity);
+                        showMessage(data.message, 'success');
+                    } else {
+                        showMessage(data.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('Произошла ошибка при добавлении в корзину', 'error');
+                });
+        });
+    });
+});
+
+// Обработчик для формы с количеством на странице товара
+const purchaseForm = document.querySelector('.purchase-form');
+if (purchaseForm) {
+    purchaseForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Пропускаем, если это форма товара с id 'add-to-cart-form'
+        if (this.id === 'add-to-cart-form') {
+            console.log('Пропускаем форму товара в purchaseForm обработчике');
+            return;
+        }
+
+        const url = this.action;
+        const formData = new FormData(this);
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateCartIcon(data.cart_total_quantity);
+                    showMessage(data.message, 'success');
+                } else {
+                    showMessage(data.error, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('Произошла ошибка при добавлении в корзину', 'error');
+            });
+    });
+}

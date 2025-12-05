@@ -112,7 +112,7 @@ def cart_add(request, product_id):
             print(f"Sending JSON response: {response_data}")
             return JsonResponse(response_data)
         else:
-            messages.success(request, f'Товар "{product.name}" добавлен в корзину')
+            # messages.success(request, f'Товар "{product.name}" добавлен в корзину')
             return redirect('shop:cart_detail')
 
     except Exception as e:
