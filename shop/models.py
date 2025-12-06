@@ -68,6 +68,7 @@ class ProductImage(models.Model):
 
 
 class Order(models.Model):
+    readonly_fields = ['created','updated']  # Добавить все не редактируемые поля
     first_name = models.CharField(max_length=50, verbose_name='Имя')
     email = models.EmailField(verbose_name='Email')
     phone = models.CharField(max_length=20, verbose_name='Телефон')  # Обязательное поле
@@ -94,14 +95,35 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
 
     class Meta:
-        verbose_name = 'Контактная информация'
-        verbose_name_plural = 'Контактная информация'
+        verbose_name = 'Информация о заказе'
+        verbose_name_plural = 'Информация о заказе'
 
     def __str__(self):
         return str(self.id)
 
     def get_cost(self):
         return self.price * self.quantity
+
+    @property
+    def total_price(self):
+        """Вычисляемая общая стоимость позиции"""
+        if self.price is not None and self.quantity is not None:
+            return self.price * self.quantity
+        return 0
+
+    @property
+    def price_display(self):
+        """Безопасное отображение цены"""
+        if self.price is not None:
+            return f"{self.price:.2f}"
+        return "—"
+
+    @property
+    def total_price_display(self):
+        """Безопасное отображение общей стоимости"""
+        if self.price is not None and self.quantity is not None:
+            return f"{self.price * self.quantity:.2f}"
+        return "—"
 
 
 class ContactInfo(models.Model):

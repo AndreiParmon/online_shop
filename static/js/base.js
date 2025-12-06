@@ -64,144 +64,99 @@ function removeMessage(messageId) {
     }
 }
 
-// Автоматическое скрытие системных сообщений Django через 5 секунд
-document.addEventListener('DOMContentLoaded', function () {
-    const messages = document.querySelectorAll('.message');
-    messages.forEach(message => {
-        setTimeout(() => {
-            removeMessage(message.id);
-        }, 5000); // 5 секунд
-    });
-});
-
-// Обработчик для всех форм добавления в корзину
-document.addEventListener('DOMContentLoaded', function () {
-    const addToCartForms = document.querySelectorAll('.add-to-cart-form');
-
-    addToCartForms.forEach(form => {
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            const url = this.action;
-            const formData = new FormData(this);
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': getCookie('csrftoken'),
-                },
-                body: formData
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        updateCartIcon(data.cart_total_quantity);
-                        showMessage(data.message, 'success');
-                    } else {
-                        showMessage(data.error, 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showMessage('Произошла ошибка при добавлении в корзину', 'error');
-                });
-        });
-    });
-});
-
-// Обработчик для формы с количеством на странице товара
-const purchaseForm = document.querySelector('.purchase-form');
-if (purchaseForm) {
-    purchaseForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        const url = this.action;
-        const formData = new FormData(this);
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': getCookie('csrftoken'),
-            },
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    updateCartIcon(data.cart_total_quantity);
-                    showMessage(data.message, 'success');
-                } else {
-                    showMessage(data.error, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showMessage('Произошла ошибка при добавлении в корзину', 'error');
-            });
-    });
-}
-
-
-// Функции для рекламного модального окна
+// Функции для рекламного модального окна - ОДИН РАЗ за сессию!
 function showAdModal() {
-    // Проверяем, не показывали ли уже модалку в этой сессии
-    if (!sessionStorage.getItem('adShown')) {
-        setTimeout(() => {
-            const modal = document.getElementById('adModal');
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Блокируем прокрутку
-        }, 1000); // Показываем через 1 секунду после загрузки
+    console.log('🔄 Попытка показать рекламное окно...');
+    console.log('📊 sessionStorage adShown:', sessionStorage.getItem('adShown'));
+
+    // ВАЖНО: Проверяем sessionStorage - показываем только если еще не показывали
+    const adShown = sessionStorage.getItem('adShown');
+    if (adShown === 'true') {
+        console.log('📝 Рекламное окно уже было показано в этой сессии');
+        return;
     }
+
+    const modal = document.getElementById('adModal');
+    if (!modal) {
+        console.error('❌ Элемент adModal не найден!');
+        return;
+    }
+
+    console.log('✅ Элемент adModal найден');
+
+    // Проверяем, может окно уже показано
+    if (modal.style.display === 'flex') {
+        console.log('ℹ️ Окно уже показано');
+        return;
+    }
+
+    // Показываем с задержкой
+    setTimeout(() => {
+        const modalCheck = document.getElementById('adModal');
+        if (modalCheck) {
+            console.log('🔄 Показываем модальное окно через 1.5 сек...');
+
+            // 1. Сначала показываем элемент
+            modalCheck.style.display = 'flex';
+
+            // 2. Через небольшой промежуток добавляем класс для анимации
+            setTimeout(() => {
+                modalCheck.classList.add('active');
+                console.log('✅ Класс "active" добавлен');
+            }, 50);
+
+            // 3. Блокируем прокрутку
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+
+            // 4. Запоминаем в sessionStorage, что показали
+            sessionStorage.setItem('adShown', 'true');
+            console.log('✅ sessionStorage установлен в "true"');
+
+            // 5. Автоматическое закрытие через 30 секунд
+            setTimeout(() => {
+                if (modalCheck.style.display === 'flex') {
+                    console.log('⏰ Автоматическое закрытие через 30 сек');
+                    closeAdModal();
+                }
+            }, 30000);
+        }
+    }, 1500);
 }
 
 function closeAdModal() {
+    console.log('🔄 Закрытие рекламного окна...');
     const modal = document.getElementById('adModal');
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto'; // Разблокируем прокрутку
-    sessionStorage.setItem('adShown', 'true'); // Запоминаем, что показали
+    if (modal) {
+        // 1. Убираем класс анимации
+        modal.classList.remove('active');
+
+        // 2. Ждем окончания анимации и скрываем
+        setTimeout(() => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+            console.log('✅ Модальное окно закрыто');
+
+            // 3. Устанавливаем sessionStorage при закрытии
+            // (на случай если пользователь закрыл до автоматического закрытия)
+            sessionStorage.setItem('adShown', 'true');
+        }, 300);
+    } else {
+        // На всякий случай устанавливаем sessionStorage
+        sessionStorage.setItem('adShown', 'true');
+    }
 }
 
-// Инициализация при загрузке страницы
-document.addEventListener('DOMContentLoaded', function () {
-    // Показываем рекламное модальное окно
-    showAdModal();
-
-    // Назначаем обработчики для модального окна
-    document.getElementById('closeAdModal').addEventListener('click', closeAdModal);
-    document.getElementById('startShoppingBtn').addEventListener('click', closeAdModal);
-
-    // Закрытие по клику на затемненную область
-    document.getElementById('adModal').addEventListener('click', function (e) {
-        if (e.target === this) {
-            closeAdModal();
-        }
-    });
-
-    // Закрытие по ESC
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-            closeAdModal();
-        }
-    });
-});
-
 // Выпадающее меню для мобильной версии
-document.addEventListener('DOMContentLoaded', function() {
+function initMobileMenu() {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const dropdownMenu = document.getElementById('dropdownMenu');
 
-    // Функция переключения меню
+    if (!mobileMenuBtn || !dropdownMenu) return;
+
     function toggleDropdown() {
         dropdownMenu.classList.toggle('active');
-
-        // Меняем иконку
         const icon = mobileMenuBtn.querySelector('i');
         if (dropdownMenu.classList.contains('active')) {
             icon.classList.remove('fa-bars');
@@ -212,7 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Функция закрытия меню
     function closeDropdown() {
         dropdownMenu.classList.remove('active');
         const icon = mobileMenuBtn.querySelector('i');
@@ -220,42 +174,95 @@ document.addEventListener('DOMContentLoaded', function() {
         icon.classList.add('fa-bars');
     }
 
-    // Обработчики событий
-    if (mobileMenuBtn && dropdownMenu) {
-        // Открытие/закрытие меню по клику на кнопку
-        mobileMenuBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            toggleDropdown();
-        });
+    // Открытие/закрытие меню
+    mobileMenuBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleDropdown();
+    });
 
-        // Закрытие меню при клике на ссылку
-        const dropdownLinks = dropdownMenu.querySelectorAll('.dropdown-link');
-        dropdownLinks.forEach(link => {
-            link.addEventListener('click', closeDropdown);
-        });
+    // Закрытие меню при клике на ссылку
+    const dropdownLinks = dropdownMenu.querySelectorAll('.dropdown-link');
+    dropdownLinks.forEach(link => {
+        link.addEventListener('click', closeDropdown);
+    });
 
-        // Закрытие меню при клике вне его
-        document.addEventListener('click', function(event) {
-            if (!mobileMenuBtn.contains(event.target) && !dropdownMenu.contains(event.target)) {
-                closeDropdown();
-            }
-        });
+    // Закрытие меню при клике вне его
+    document.addEventListener('click', function(event) {
+        if (!mobileMenuBtn.contains(event.target) && !dropdownMenu.contains(event.target)) {
+            closeDropdown();
+        }
+    });
 
-        // Закрытие меню при нажатии Escape
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape' && dropdownMenu.classList.contains('active')) {
-                closeDropdown();
+    // Закрытие меню при нажатии Escape
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && dropdownMenu.classList.contains('active')) {
+            closeDropdown();
+        }
+    });
+}
+
+// Основная инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('✅ DOM загружен, начинаем инициализацию...');
+
+    // 1. Инициализация рекламного окна
+    console.log('1. Инициализация рекламного окна...');
+    console.log('- adModal элемент:', document.getElementById('adModal'));
+    console.log('- closeAdModal кнопка:', document.getElementById('closeAdModal'));
+    console.log('- startShoppingBtn кнопка:', document.getElementById('startShoppingBtn'));
+
+    // Показываем рекламное окно
+    showAdModal();
+
+    // Назначаем обработчики для модального окна
+    const closeBtn = document.getElementById('closeAdModal');
+    const startBtn = document.getElementById('startShoppingBtn');
+    const modal = document.getElementById('adModal');
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeAdModal);
+    }
+
+    if (startBtn) {
+        startBtn.addEventListener('click', closeAdModal);
+    }
+
+    if (modal) {
+        modal.addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeAdModal();
             }
         });
     }
-});
 
+    // Закрытие по ESC
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('adModal');
+            if (modal && modal.style.display === 'flex') {
+                closeAdModal();
+            }
+        }
+    });
 
+    // 2. Автоматическое скрытие системных сообщений Django
+    console.log('2. Обработка системных сообщений...');
+    const messages = document.querySelectorAll('.message');
+    messages.forEach(message => {
+        setTimeout(() => {
+            removeMessage(message.id);
+        }, 5000);
+    });
 
-// Обработчик для всех форм добавления в корзину
-document.addEventListener('DOMContentLoaded', function () {
+    // 3. Инициализация мобильного меню
+    console.log('3. Инициализация мобильного меню...');
+    initMobileMenu();
+
+    // 4. Обработчики форм добавления в корзину
+    console.log('4. Настройка обработчиков корзины...');
+
+    // Обработчик для всех форм добавления в корзину
     const addToCartForms = document.querySelectorAll('.add-to-cart-form');
-
     addToCartForms.forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -297,43 +304,56 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         });
     });
+
+    // Обработчик для формы с количеством на странице товара
+    const purchaseForm = document.querySelector('.purchase-form');
+    if (purchaseForm) {
+        purchaseForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Пропускаем, если это форма товара с id 'add-to-cart-form'
+            if (this.id === 'add-to-cart-form') {
+                console.log('Пропускаем форму товара в purchaseForm обработчике');
+                return;
+            }
+
+            const url = this.action;
+            const formData = new FormData(this);
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateCartIcon(data.cart_total_quantity);
+                        showMessage(data.message, 'success');
+                    } else {
+                        showMessage(data.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('Произошла ошибка при добавлении в корзину', 'error');
+                });
+        });
+    }
+
+    console.log('✅ Вся инициализация завершена!');
 });
 
-// Обработчик для формы с количеством на странице товара
-const purchaseForm = document.querySelector('.purchase-form');
-if (purchaseForm) {
-    purchaseForm.addEventListener('submit', function (e) {
-        e.preventDefault();
+// Глобальная обработка ошибок
+window.addEventListener('error', function(e) {
+    console.error('❌ Глобальная ошибка:', e.message);
+    console.error('Файл:', e.filename);
+    console.error('Строка:', e.lineno);
+});
 
-        // Пропускаем, если это форма товара с id 'add-to-cart-form'
-        if (this.id === 'add-to-cart-form') {
-            console.log('Пропускаем форму товара в purchaseForm обработчике');
-            return;
-        }
-
-        const url = this.action;
-        const formData = new FormData(this);
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': getCookie('csrftoken'),
-            },
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    updateCartIcon(data.cart_total_quantity);
-                    showMessage(data.message, 'success');
-                } else {
-                    showMessage(data.error, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showMessage('Произошла ошибка при добавлении в корзину', 'error');
-            });
-    });
-}
+window.addEventListener('unhandledrejection', function(e) {
+    console.error('❌ Необработанное обещание:', e.reason);
+});

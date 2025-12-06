@@ -51,20 +51,32 @@ class ProductAdmin(admin.ModelAdmin):
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
-    raw_id_fields = ['product']
+    extra = 0
+    readonly_fields = ['get_product_info', 'total_price_display', 'price_display']
+    fields = ['get_product_info', 'quantity', 'price_display', 'total_price_display']
+
+    def get_product_info(self, obj):
+        if obj.product:
+            return format_html(
+                '<a href="{}" target="_blank">{}</a><br><small></small>',
+                obj.product.get_absolute_url(),
+                obj.product.name,
+                obj.product.sku if hasattr(obj.product, 'sku') else '—'
+            )
+        return "Товар не найден"
+
+    get_product_info.short_description = 'Товар'
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
+    readonly_fields = ['created', 'updated']  # Добавить эту строку
     list_display = ['id', 'first_name', 'email', 'created', 'updated']
     list_filter = ['created', 'updated']
     inlines = [OrderItemInline]
     fieldsets = (
         ('Информация о клиенте', {
-            'fields': ('first_name', 'email', 'phone')
-        }),
-        ('Информация о заказе', {
-            'fields': ('created', 'updated')
+            'fields': ('first_name', 'email', 'phone', 'comments')
         }),
     )
 
