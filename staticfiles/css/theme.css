@@ -1,0 +1,313 @@
+/* CSS переменные для тем */
+:root {
+    /* Светлая тема (по умолчанию) */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
+
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-muted: #adb5bd;
+
+    --border-color: #dee2e6;
+    --border-light: #e9ecef;
+
+    --primary-color: #007a66;
+    --primary-hover: #006654;
+    --primary-light: #e6f3f1;
+
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+
+    --card-bg: #ffffff;
+    --card-border: #dee2e6;
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+
+    --header-bg: #ffffff;
+    --footer-bg: #f8f9fa;
+}
+
+[data-theme="dark"] {
+    /* Тёмная тема */
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --bg-tertiary: #2d2d2d;
+
+    --text-primary: #e9ecef;
+    --text-secondary: #adb5bd;
+    --text-muted: #6c757d;
+
+    --border-color: #444444;
+    --border-light: #333333;
+
+    --primary-color: #00a884;
+    --primary-hover: #009672;
+    --primary-light: #1a3a35;
+
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #0dcaf0;
+
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.25);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.3);
+
+    --card-bg: #1e1e1e;
+    --card-border: #333333;
+    --input-bg: #2d2d2d;
+    --input-border: #444444;
+
+    --header-bg: #1a1a1a;
+    --footer-bg: #1a1a1a;
+}
+
+/* Автоматическое определение темы системы */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+        --bg-primary: #121212;
+        --bg-secondary: #1e1e1e;
+        --bg-tertiary: #2d2d2d;
+        --text-primary: #e9ecef;
+        --text-secondary: #adb5bd;
+        --border-color: #444444;
+    }
+}
+
+/* Применение CSS переменных к элементам */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.header {
+    background-color: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.footer {
+    background-color: var(--footer-bg);
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Стили для переключателя темы */
+.theme-switcher {
+    margin-right: 15px;
+}
+
+.theme-toggle {
+    position: relative;
+    width: 60px;
+    height: 30px;
+    border-radius: 30px;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5px;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    border-color: var(--primary-color);
+}
+
+.theme-toggle i {
+    font-size: 14px;
+    z-index: 1;
+}
+
+.theme-icon-light {
+    color: #ffc107;
+}
+
+.theme-icon-dark {
+    color: #6c757d;
+}
+
+[data-theme="dark"] .theme-icon-dark {
+    color: #f8f9fa;
+}
+
+.theme-toggle-slider {
+    position: absolute;
+    left: 4px;
+    width: 22px;
+    height: 22px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    z-index: 0;
+}
+
+[data-theme="dark"] .theme-toggle-slider {
+    transform: translateX(30px);
+}
+
+/* Переключатель темы в мобильном меню */
+.theme-toggle-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 12px 15px;
+    color: var(--text-primary);
+    text-align: left;
+}
+
+.theme-switch {
+    position: relative;
+    width: 40px;
+    height: 20px;
+    background: var(--bg-tertiary);
+    border-radius: 20px;
+}
+
+.theme-switch-slider {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: 16px;
+    height: 16px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+[data-theme="dark"] .theme-switch-slider {
+    transform: translateX(20px);
+}
+
+/* Стили для карточек товаров */
+.product-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-color);
+}
+
+/* Стили для кнопок */
+.btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: 1px solid var(--primary-color);
+}
+
+.btn:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Стили для форм */
+input, textarea, select {
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--input-border);
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 122, 102, 0.25);
+}
+
+/* Стили для таблиц */
+table {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+th {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+td {
+    border-color: var(--border-color);
+}
+
+/* Стили для рекламного модального окна */
+.ad-modal-overlay {
+    background: rgba(0, 0, 0, 0.85);
+}
+
+.ad-modal-content {
+    background: var(--card-bg);
+    color: var(--text-primary);
+}
+
+/* Стили для сообщений */
+.message {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.message.success {
+    border-color: var(--success-color);
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+.message.error {
+    border-color: var(--danger-color);
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Стили для корзины */
+.cart-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+}
+
+.cart-summary {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+}
+
+/* Адаптивные стили */
+@media (max-width: 768px) {
+    .theme-switcher {
+        margin-right: 10px;
+    }
+
+    .theme-toggle {
+        width: 50px;
+        height: 26px;
+    }
+
+    [data-theme="dark"] .theme-toggle-slider {
+        transform: translateX(24px);
+    }
+}

@@ -2,18 +2,25 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>{% block title %}KliMiron{% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="/static/images/favicon(header).png" type="image/x-icon">
     <link rel="stylesheet" href="/static/css/style.css">
-
 </head>
 <body>
 <!-- Рекламное модальное окно -->
 <div class="ad-modal-overlay" id="adModal">
     <div class="ad-modal-content">
         <button class="ad-close-btn" id="closeAdModal">&times;</button>
+        <!-- Добавляем изображение -->
+        <div class="ad-image-container">
+            <img src="/static/images/lazernaya-gravirovka.png" alt="lazernaya-gravirovka" class="ad-image">
+            <div class="ad-image-overlay">
+                <span class="ad-badge">-20%</span>
+            </div>
+        </div>
+
         <div class="ad-icon">
             <i class="fas fa-gift"></i>
         </div>
@@ -64,6 +71,17 @@
             </nav>
 
             <div class="header-actions">
+
+                <!-- Переключатель темы -->
+                <div class="theme-switcher">
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Переключить тему"
+                            title="Переключить тему">
+                        <i class="fas fa-sun theme-icon-light"></i>
+                        <i class="fas fa-moon theme-icon-dark"></i>
+                        <span class="theme-toggle-slider"></span>
+                    </button>
+                </div>
+
                 <a href="{% url 'shop:cart_detail' %}" class="cart-link" id="cart-link">
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-count" id="cart-count">
@@ -84,6 +102,11 @@
                         <a href="{% url 'shop:contacts' %}" class="dropdown-link">
                             <i class="fas fa-phone"></i>
                             Контакты
+                        </a>
+                        <!-- Переключатель темы в мобильном меню -->
+                        <a href="#" class="dropdown-link" id="theme-toggle-mobile">
+                            <i class="fas fa-moon"></i>
+                            <span>Тёмная тема</span>
                         </a>
                     </div>
                 </div>
@@ -127,6 +150,7 @@
 </footer>
 
 <script src="/static/js/base.js" defer></script>
+<script src="/static/js/theme.js" defer></script>
 
 </body>
 </html>

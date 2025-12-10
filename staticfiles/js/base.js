@@ -1,12 +1,11 @@
+// Инициализация темы
 document.addEventListener('DOMContentLoaded', function () {
     console.log('✅ DOM загружен, начинаем инициализацию...');
 
-    // Инициализация темы
-    if (typeof themeManager !== 'undefined') {
-        console.log('🎨 Тема загружена: ' + themeManager.getTheme());
+    // Инициализация темы (если еще не инициализирована)
+    if (typeof initTheme === 'function') {
+        initTheme();
     }
-
-    // Остальной код остается без изменений...
 });
 
 // Функции для работы с корзиной
@@ -367,92 +366,4 @@ window.addEventListener('error', function(e) {
 
 window.addEventListener('unhandledrejection', function(e) {
     console.error('❌ Необработанное обещание:', e.reason);
-});
-
-// Функция для определения типа устройства
-function getDeviceType() {
-    const width = window.innerWidth;
-
-    if (width >= 1920) return 'xl-desktop';
-    if (width >= 1200) return 'desktop';
-    if (width >= 992) return 'laptop';
-    if (width >= 768) return 'tablet';
-    if (width >= 576) return 'mobile';
-    return 'small-mobile';
-}
-
-// Функция для определения ориентации
-function getOrientation() {
-    return window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
-}
-
-// Функция для проверки touch устройства
-function isTouchDevice() {
-    return ('ontouchstart' in window) ||
-           (navigator.maxTouchPoints > 0) ||
-           (navigator.msMaxTouchPoints > 0);
-}
-
-// Обновление классов на body для адаптивных стилей
-function updateResponsiveClasses() {
-    const deviceType = getDeviceType();
-    const orientation = getOrientation();
-    const isTouch = isTouchDevice();
-
-    // Удаляем старые классы
-    document.body.classList.remove(
-        'device-xl-desktop',
-        'device-desktop',
-        'device-laptop',
-        'device-tablet',
-        'device-mobile',
-        'device-small-mobile',
-        'orientation-landscape',
-        'orientation-portrait',
-        'touch-device',
-        'non-touch-device'
-    );
-
-    // Добавляем новые классы
-    document.body.classList.add(`device-${deviceType}`);
-    document.body.classList.add(`orientation-${orientation}`);
-    document.body.classList.add(isTouch ? 'touch-device' : 'non-touch-device');
-}
-
-// Обработка изменения размера окна с debounce
-let resizeTimeout;
-function handleResize() {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-        updateResponsiveClasses();
-        console.log('📱 Устройство:', getDeviceType(), 'Ориентация:', getOrientation());
-    }, 250);
-}
-
-// Инициализация при загрузке
-document.addEventListener('DOMContentLoaded', function() {
-    updateResponsiveClasses();
-
-    // Слушаем изменение размера окна
-    window.addEventListener('resize', handleResize);
-
-    // Слушаем изменение ориентации
-    window.addEventListener('orientationchange', handleResize);
-
-    // Для touch устройств добавляем специальные классы
-    if (isTouchDevice()) {
-        document.documentElement.classList.add('touch');
-
-        // Улучшаем обработку touch событий для лучшего UX
-        const touchElements = document.querySelectorAll('.btn, .category-item, .nav-link');
-        touchElements.forEach(el => {
-            el.style.cursor = 'pointer';
-            el.addEventListener('touchstart', function() {
-                this.classList.add('touch-active');
-            });
-            el.addEventListener('touchend', function() {
-                this.classList.remove('touch-active');
-            });
-        });
-    }
 });
